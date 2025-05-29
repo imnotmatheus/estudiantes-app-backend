@@ -5,13 +5,14 @@ export const EventType = {
 	TAREA: "Tarea",
 };
 
-export function createEvent(title, description, endDate, type) {
+export function createEvent(title, description, endDate, type, userId) {
 	return {
-		title,
-		description,
+		title: title,
+		description: description,
 		endDate: new Date(endDate),
 		creationDate: new Date(),
 		type: type,
+		userId: userId
 	};
 }
 

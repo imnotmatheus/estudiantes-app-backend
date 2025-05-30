@@ -1,8 +1,7 @@
-export function createUser(firstname, lastname, birthdate, email, password) {
+export function createUser(firstname, lastname, email, password) {
 	return {
 		firstname,
 		lastname,
-		birthdate: new Date(birthdate),
 		creationDate: new Date(),
 		email,
 		password,
@@ -16,10 +15,6 @@ export function validateUser(user) {
 
 	if (!user.lastname || typeof user.lastname !== "string") {
 		throw new Error("Last name is required and must be a string");
-	}
-
-	if (!user.birthdate || !(user.birthdate instanceof Date)) {
-		throw new Error("Birth date is required and must be a valid date");
 	}
 
 	if (

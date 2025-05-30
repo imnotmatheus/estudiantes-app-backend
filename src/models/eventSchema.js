@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export const EventType = {
 	TRABAJO_PRACTICO: "Trabajo Práctico",
 	PARCIAL: "Parcial",
@@ -37,6 +39,10 @@ export function validateEvent(event) {
 		throw new Error(
 			`Type must be one of: ${Object.values(EventType).join(", ")}`
 		);
+	}
+
+	if (!event.userId || !(event.userId instanceof ObjectId)) {
+		throw new Error("userId is required and must be of ObjectId type");
 	}
 
 	return true;

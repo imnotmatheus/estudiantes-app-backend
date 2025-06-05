@@ -1,4 +1,4 @@
-import { getDb } from ".conection.js";
+import { getDb } from "./connection.js";
 import bcrypt from "bcrypt";
 import { createUser, validateUser } from "../models/userSchema.js";
 

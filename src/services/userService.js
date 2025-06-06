@@ -1,6 +1,7 @@
 import { registerUser, findUserByEmail } from "../data/userData.js";
 import { validateUser, createUser } from "../models/userSchema.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
 
 export async function registerUserService({
   firstname,
@@ -21,6 +22,27 @@ export async function registerUserService({
     throw new Error(error.message);
   }
 }
+
+export async function loginUserService ({ email, password }) {
+  const user = await findUserByEmail(email);
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!user || !isMatch) {
+    throw new Error("Invalid credentials")
+  }
+
+  // No devolver password
+  const { password: _pw, ...userWithoutPassword } = user;
+
+  // Generar JWT
+  const token = jwt.sign(
+      { _id: user._id, username: user.username, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+  return {userWithoutPassword, token};
+};
 
 export async function userExistsByEmail(email) {
   const user = await findUserByEmail(email);

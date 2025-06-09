@@ -27,8 +27,6 @@ export async function registerUserController(req, res) {
 export async function loginUserController(req, res) {
   const { email, password } = req.body;
 
-  // validacion en capa de servicios
-
   try {
     const user = await loginUserService({ email, password });
     res.status(200).json({
@@ -36,8 +34,9 @@ export async function loginUserController(req, res) {
       user
     });
   } catch (error) {
+    const statusCode = error.statusCode || 500;
     res
-      .status(500)
-      .json({ error: "Internal server error", error_message: error.message });
+      .status(statusCode)
+      .json({ error: error.message, error_message: error.message });
   }
 }

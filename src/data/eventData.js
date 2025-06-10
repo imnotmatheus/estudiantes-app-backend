@@ -7,3 +7,9 @@ export const findEventById = async (eventId) => {
 
 	return await db.collection("events").findOne({ _id: objectId });
 };
+
+export async function saveNewEvent(event) {
+    const db = getDb();
+    const result = await db.collection("events").insertOne(event);
+    return result.insertedId;
+}

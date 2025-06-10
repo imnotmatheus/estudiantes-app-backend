@@ -1,9 +1,23 @@
-import { findEvents } from "../data/eventData.js";
+import { findUserEvents } from "../data/eventData.js";
+import { ObjectId } from "mongodb";
 
-export const getEvents = async () => {
+export const getUserEvents = async (userId) => {
 	try {
-		return await findEvents();
+		if (!userId) {
+			const error = new Error("User ID is required");
+			error.status = 400;
+			throw error;
+		}
+
+		const objectId = new ObjectId(userId);
+		return await findUserEvents(objectId);
 	} catch (error) {
-		throw new Error("Failed to get events", { status: 500 });
+		if (error.status) {
+			throw error;
+		}
+		throw {
+			message: "Internal server error",
+			status: 500,
+		};
 	}
 };

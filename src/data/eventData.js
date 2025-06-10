@@ -8,8 +8,8 @@ export const findEventById = async (eventId) => {
 	return await db.collection("events").findOne({ _id: objectId });
 };
 
-export const findEvents = async () => {
+export const findUserEvents = async (userId) => {
 	const db = getDb();
 
-	return await db.collection("events").find({}).toArray();
+	return await db.collection("events").find({ userId: userId }).toArray();
 };

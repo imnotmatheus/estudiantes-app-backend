@@ -9,6 +9,6 @@ export const saveNewEventController = async (req, res) => {
 
     } catch (error) {
         const statusCode = error.status || 500;
-        res.status(statusCode).json({ error: error.message, error_message: error.message});
+        res.status(statusCode).json({error_message: error.message});
     }
 }

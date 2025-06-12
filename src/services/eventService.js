@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { saveNewEvent } from "../data/eventData.js";
 import { createEvent, validateEvent } from "../models/eventSchema.js";
-import { findUserById } from "../data/userData.js";
+import { ensureUserExistsById } from "./userService.js";
 
 
 export async function saveNewEventService (title, description, endDate, type, userId) {
@@ -17,14 +17,13 @@ export async function saveNewEventService (title, description, endDate, type, us
         return {_id: idEvent, ...evento};
 
     } catch(error) {
-        throw new Error(error.message);
-    }
-}
+        if (error.status) {
+            throw error;
+        }
 
-export async function ensureUserExistsById(userId) {
-    const user = await findUserById(userId);
-    if (!user) {
-        throw new Error("El usuario especificado no existe");
+        throw {
+            message: "Internal server error",
+            status: 500,
+        };
     }
-    return user;
-}
+};

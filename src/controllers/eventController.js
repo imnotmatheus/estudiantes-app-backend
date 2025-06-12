@@ -8,7 +8,7 @@ export const saveNewEventController = async (req, res) => {
         res.status(201).json(eventoCreado);
 
     } catch (error) {
-        const status = error.status || 500;
-        res.status(status).json({ error: error.message});
+        const statusCode = error.status || 500;
+        res.status(statusCode).json({ error: error.message, error_message: error.message});
     }
 }

@@ -27,7 +27,7 @@ export function validateEvent(event) {
 		throw new Error("Description is required and must be a string");
 	}
 
-	if (!event.endDate || !(event.endDate instanceof Date)) {
+	if (!event.endDate || !(event.endDate instanceof Date || isNaN(event.endDate.getTime()))) {
 		throw new Error("End date is required and must be a valid date");
 	}
 

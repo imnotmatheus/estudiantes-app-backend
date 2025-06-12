@@ -1,4 +1,4 @@
-import { registerUser, findUserByEmail } from "../data/userData.js";
+import { registerUser, findUserByEmail, findUserById } from "../data/userData.js";
 import { validateUser, createUser } from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 
@@ -28,4 +28,14 @@ export async function userExistsByEmail(email) {
     throw new Error("User with this email already exists");
   }
   return user;
+}
+
+export async function ensureUserExistsById(userId) {
+    const user = await findUserById(userId);
+    if (!user) {
+      const error = new Error("El usuario especificado no existe");
+      error.status = 404;
+      throw error;
+    }
+    return user;
 }

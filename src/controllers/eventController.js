@@ -8,7 +8,8 @@ export const getEvent = async (req, res) => {
         }
         res.json(event);
     } catch (error) {
-        console.log("Error fetching event: ", error);
-        res.status(500).json({ message: "Internal server error" });
+        const statusCode = error.statusCode || 500;
+        const message = statusCode === 500 ? "Internal server error" : error.message;
+        res.status(statusCode).json({ message });
     }
 };

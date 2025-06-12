@@ -1,4 +1,4 @@
-import { registerUserService } from "../services/userService.js";
+import { registerUserService, loginUserService } from "../services/userService.js";
 
 export async function registerUserController(req, res) {
   const { firstname, lastname, email, password } = req.body;
@@ -21,5 +21,22 @@ export async function registerUserController(req, res) {
     res
       .status(500)
       .json({ error: "Internal server error", error_message: error.message });
+  }
+}
+
+export async function loginUserController(req, res) {
+  const { email, password } = req.body;
+
+  try {
+    const user = await loginUserService({ email, password });
+    res.status(200).json({
+      message: "Succesfull login",
+      user
+    });
+  } catch (error) {
+    const statusCode = error.statusCode || 500;
+    res
+      .status(statusCode)
+      .json({ error: error.message, error_message: error.message });
   }
 }

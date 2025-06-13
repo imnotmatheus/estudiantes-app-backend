@@ -19,7 +19,7 @@ export async function registerUserService({
     const result = await registerUser(newUser);
 
     // generate JWT token and send with result
-    const token = generateToken(result._id, email)
+    const token = generateToken(result.insertedId, email)
 
     return { ...result, token};
   } catch (error) {

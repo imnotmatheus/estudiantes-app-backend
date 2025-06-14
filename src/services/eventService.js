@@ -1,5 +1,26 @@
+import { findUserEvents, findEventById, deleteEventById } from "../data/eventData.js";
 import { ObjectId } from "mongodb";
-import { findEventById, deleteEventById } from "../data/eventData.js";
+
+export const getUserEvents = async (userId) => {
+  try {
+    if (!userId || !ObjectId.isValid(userId)) {
+      const error = new Error("User ID is invalid or required");
+      error.status = 400;
+      throw error;
+    }
+
+    const objectId = new ObjectId(userId);
+    return await findUserEvents(objectId);
+  } catch (error) {
+    if (error.status) {
+      throw error;
+    }
+    throw {
+      message: "Internal server error",
+      status: 500,
+    };
+  }
+};
 
 function validateEventId(id) {
     if (!id) {

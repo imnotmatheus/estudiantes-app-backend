@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
-import { findEventById } from "../data/eventData.js";
+import { findEventById, deleteEventById } from "../data/eventData.js";
 
-export const searchEventById = async (id) => {
+function validateEventId(id) {
     if (!id) {
         const error = new Error("Event ID is required");
         error.statusCode = 400;
@@ -13,10 +13,13 @@ export const searchEventById = async (id) => {
         error.statusCode = 400;
         throw error;
     }
+}
 
+export const searchEventById = async (id) => {
     try {
-        const event = await findEventById(id);
+        validateEventId(id);
 
+        const event = await findEventById(id);
         if (!event) {
             const error = new Error("Event not found");
             error.statusCode = 404;
@@ -25,9 +28,27 @@ export const searchEventById = async (id) => {
 
         return event;
     } catch (error) {
-        if (error.statusCode) {
+        if (error.statusCode) throw error;
+
+        error.statusCode = 500;
+        throw error;
+    }
+};
+
+export const removeEventById = async (id) => {
+    try {
+        validateEventId(id);
+
+        const deleted = await deleteEventById(id);
+        if (!deleted) {
+            const error = new Error("Event not found");
+            error.statusCode = 404;
             throw error;
         }
+
+        return { message: "Event deleted successfully" };
+    } catch (error) {
+        if (error.statusCode) throw error;
 
         error.statusCode = 500;
         throw error;

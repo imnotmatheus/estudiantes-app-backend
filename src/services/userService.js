@@ -1,68 +1,76 @@
-import { registerUser, findUserByEmail, findUserById } from "../data/userData.js";
+import {
+  registerUser,
+  findUserByEmail,
+  findUserById,
+  findAllUsers,
+} from "../data/userData.js";
 import { validateUser, createUser } from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function registerUserService({
-	firstname,
-	lastname,
-	email,
-	password,
+  firstname,
+  lastname,
+  email,
+  password,
 }) {
-	const newUser = createUser(firstname, lastname, email, password);
-	if (!validateUser(newUser)) {
-		return;
-	}
-	try {
-		await userExistsByEmail(email);
-		newUser.password = await bcrypt.hash(password, 10);
-		const result = await registerUser(newUser);
-		return result;
-	} catch (error) {
-		throw new Error(error.message);
-	}
+  const newUser = createUser(firstname, lastname, email, password);
+  if (!validateUser(newUser)) {
+    return;
+  }
+  try {
+    await userExistsByEmail(email);
+    newUser.password = await bcrypt.hash(password, 10);
+    const result = await registerUser(newUser);
+    return result;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function loginUserService({ email, password }) {
-	const user = await findUserByEmail(email);
+  const user = await findUserByEmail(email);
 
-	if (!user) {
-		throw new Error("Invalid credentials");
-	}
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
 
-	const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
 
-	if (!isMatch) {
-		throw new Error("Invalid credentials");
-	}
+  if (!isMatch) {
+    throw new Error("Invalid credentials");
+  }
 
-	// No devolver password
-	const { password: _pw, ...userWithoutPassword } = user;
+  // No devolver password
+  const { password: _pw, ...userWithoutPassword } = user;
 
-	// Generar JWT
-	const token = jwt.sign(
-		{ _id: user._id, username: user.username, email: user.email },
-		process.env.JWT_SECRET,
-		{ expiresIn: "2h" }
-	);
+  // Generar JWT
+  const token = jwt.sign(
+    { _id: user._id, username: user.username, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+  );
 
-	return { userWithoutPassword, token };
+  return { userWithoutPassword, token };
 }
 
 export async function userExistsByEmail(email) {
-	const user = await findUserByEmail(email);
-	if (user) {
-		throw new Error("User with this email already exists");
-	}
-	return user;
+  const user = await findUserByEmail(email);
+  if (user) {
+    throw new Error("User with this email already exists");
+  }
+  return user;
 }
 
-export async function ensureUserExistsById(userId) {
-    const user = await findUserById(userId);
-    if (!user) {
-      const error = new Error("El usuario especificado no existe");
-      error.status = 404;
-      throw error;
-    }
-    return user;
+export async function userExistsByID(id) {
+  const user = await findUserById(id);
+  if (!user) {
+    throw new Error("User with this id no exists");
+  }
+  return user;
+}
+
+export async function getAllUsersService() {
+  const users = await findAllUsers();
+  return users;
 }

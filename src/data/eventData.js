@@ -18,3 +18,8 @@ export async function deleteEventById(id) {
     const result = await db.collection("events").deleteOne({ _id: new ObjectId(id) });
     return result.deletedCount > 0;
 }
+export async function saveNewEvent(event) {
+    const db = getDb();
+    const result = await db.collection("events").insertOne(event);
+    return result.insertedId;
+}

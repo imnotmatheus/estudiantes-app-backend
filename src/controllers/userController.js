@@ -56,9 +56,10 @@ export async function getUserByIdController(req, res) {
     }
     res.status(200).json(user);
   } catch (error) {
+    const statusCode = error.statusCode || 500;
     res
-      .status(500)
-      .json({ error: "Internal server error", error_message: error.message });
+      .status(statusCode)
+      .json({ error: error.message, error_message: error.message });
   }
 }
 
@@ -67,8 +68,9 @@ export async function getAllUsersController(req, res) {
     const users = await getAllUsersService();
     res.status(200).json(users);
   } catch (error) {
+    const statusCode = error.statusCode || 500;
     res
-      .status(500)
-      .json({ error: "Internal server error", error_message: error.message });
+      .status(statusCode)
+      .json({ error: error.message, error_message: error.message });
   }
 }

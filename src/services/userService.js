@@ -65,7 +65,9 @@ export async function userExistsByEmail(email) {
 export async function userExistsByID(id) {
   const user = await findUserById(id);
   if (!user) {
-    throw new Error("User with this id no exists");
+    const error = new Error("User with this id does no exists");
+    error.statusCode = 404;
+    throw error;
   }
   return user;
 }

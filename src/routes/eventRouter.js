@@ -3,7 +3,7 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 import {
     getUserEventsController,
     getEvent,
-    deleteEvent,
+    deleteEvent, saveNewEventController,
 } from "../controllers/eventController.js";
 
 const eventsRouter = express.Router();
@@ -11,5 +11,6 @@ const eventsRouter = express.Router();
 eventsRouter.get("/", authMiddleware, getUserEventsController);
 eventsRouter.get("/:id", authMiddleware, getEvent);
 eventsRouter.delete("/:id", authMiddleware, deleteEvent);
+eventsRouter.post("/", saveNewEventController);
 
 export default eventsRouter;

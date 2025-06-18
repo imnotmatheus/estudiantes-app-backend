@@ -1,6 +1,11 @@
 import { getDb } from "./connection.js";
 import { ObjectId } from "mongodb";
 
+export async function findAllUsers() {
+  const db = getDb();
+  return await db.collection("users").find().toArray();
+}
+
 export const findUserById = async (userId) => {
   const db = getDb();
   const objectId = new ObjectId(userId);

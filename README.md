@@ -14,8 +14,6 @@ A Node.js REST API for managing student events and academic tasks. This applicat
 - [Database Schema](#-database-schema)
 - [Usage Examples](#-usage-examples)
 - [Project Structure](#-project-structure)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ## ✨ Features
 

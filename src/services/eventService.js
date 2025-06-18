@@ -1,7 +1,7 @@
 import { saveNewEvent, findUserEvents, findEventById, deleteEventById } from "../data/eventData.js";
 import { ObjectId } from "mongodb";
 import { createEvent, validateEvent } from "../models/eventSchema.js";
-import { ensureUserExistsById } from "./userService.js";
+import { userExistsByID } from "./userService.js";
 
 
 export const getUserEvents = async (userId) => {
@@ -92,7 +92,7 @@ export async function saveNewEventService (title, description, endDate, type, us
     }
 
     try {
-        await ensureUserExistsById(userId);
+        await userExistsByID(userId);
         const idEvent = await saveNewEvent(evento);
         return {_id: idEvent, ...evento};
 

@@ -8,7 +8,6 @@ import {
 
 const eventsRouter = express.Router();
 
-// TODO: Falta agregar el auth middleware a esta ruta.
 eventsRouter.get("/", authMiddleware, getUserEventsController);
 eventsRouter.get("/:id", authMiddleware, getEvent);
 eventsRouter.delete("/:id", authMiddleware, deleteEvent);

@@ -1,4 +1,9 @@
-import { registerUser, findUserByEmail } from "../data/userData.js";
+import {
+  registerUser,
+  findUserByEmail,
+  findUserById,
+  findAllUsers,
+} from "../data/userData.js";
 import { validateUser, createUser } from "../models/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -53,6 +58,21 @@ export async function userExistsByEmail(email) {
     throw new Error("User with this email already exists");
   }
   return user;
+}
+
+export async function userExistsByID(id) {
+  const user = await findUserById(id);
+  if (!user) {
+    const error = new Error("User with this id does not exist");
+    error.status = 404;
+    throw error;
+  }
+  return user;
+}
+
+export async function getAllUsersService() {
+  const users = await findAllUsers();
+  return users;
 }
 
 function generateToken(id, email) {

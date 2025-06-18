@@ -18,6 +18,7 @@ export async function registerUserController(req, res) {
     res.status(201).json({
       message: "User registered successfully",
       userId: result.insertedId,
+      token: result.token
     });
   } catch (error) {
     if (error.message.includes("User with this email already exists")) {

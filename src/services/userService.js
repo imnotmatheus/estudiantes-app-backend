@@ -22,9 +22,13 @@ export async function registerUserService({
     await userExistsByEmail(email);
     newUser.password = await bcrypt.hash(password, 10);
     const result = await registerUser(newUser);
-    return result;
+
+    // generate JWT token and send with result
+    const token = generateToken(result.insertedId, email)
+
+    return { ...result, token};
   } catch (error) {
-    throw new Error(error.message);
+    throw error;
   }
 }
 
@@ -43,13 +47,7 @@ export async function loginUserService({ email, password }) {
 
   // No devolver password
   const { password: _pw, ...userWithoutPassword } = user;
-
-  // Generar JWT
-  const token = jwt.sign(
-    { _id: user._id, username: user.username, email: user.email },
-    process.env.JWT_SECRET,
-    { expiresIn: "2h" }
-  );
+  const token = generateToken(user._id, user.email);
 
   return { userWithoutPassword, token };
 }
@@ -75,4 +73,12 @@ export async function userExistsByID(id) {
 export async function getAllUsersService() {
   const users = await findAllUsers();
   return users;
+}
+
+function generateToken(id, email) {
+  return jwt.sign(
+    { _id: id, email: email },
+    process.env.JWT_SECRET,
+    { expiresIn: "2h" }
+  );
 }

@@ -1,12 +1,16 @@
 import express from "express";
-import { getUserEventsController, getEvent, deleteEvent, saveNewEventController } from "../controllers/eventController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+import {
+    getUserEventsController,
+    getEvent,
+    deleteEvent, saveNewEventController,
+} from "../controllers/eventController.js";
 
 const eventsRouter = express.Router();
 
-// TODO: Falta agregar el auth middleware a esta ruta.
-eventsRouter.get("/", getUserEventsController);
-eventsRouter.get("/:id", getEvent);
-eventsRouter.delete("/:id", deleteEvent);
-eventsRouter.post("/", saveNewEventController);
+eventsRouter.get("/", authMiddleware, getUserEventsController);
+eventsRouter.get("/:id", authMiddleware, getEvent);
+eventsRouter.delete("/:id", authMiddleware, deleteEvent);
+eventsRouter.post("/", authMiddleware, saveNewEventController);
 
 export default eventsRouter;

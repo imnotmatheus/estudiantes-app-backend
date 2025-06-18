@@ -1,4 +1,5 @@
 import express from "express";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 import {
   registerUserController,
   loginUserController,
@@ -12,8 +13,7 @@ const userRouter = express.Router();
 userRouter.post("/register", registerUserController);
 // Route to login user
 userRouter.post("/login", loginUserController);
-
-userRouter.get("/:id", getUserByIdController);
-userRouter.get("/", getAllUsersController);
+userRouter.get("/:id", authMiddleware, getUserByIdController);
+userRouter.get("/", authMiddleware, getAllUsersController);
 
 export default userRouter;

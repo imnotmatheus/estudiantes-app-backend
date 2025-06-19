@@ -48,7 +48,7 @@ export async function loginUserController(req, res) {
 }
 
 export async function getUserByIdController(req, res) {
-	const userId = req.params.id;
+	const userId = req.user._id;
 
 	try {
 		const user = await userExistsByID(userId);

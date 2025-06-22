@@ -76,7 +76,12 @@ export async function getAllUsersService() {
 }
 
 function generateToken(id, email) {
-	return jwt.sign({ _id: id, email: email }, process.env.JWT_SECRET, {
+	const token = { _id: id, email: email }
+	if (email === "admin01@admin.com.ar") {
+		token.role = "admin"
+	}
+	
+	return jwt.sign(token, process.env.JWT_SECRET, {
 		expiresIn: "2h",
 	});
 }

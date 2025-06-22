@@ -77,7 +77,7 @@ export async function getAllUsersService() {
 
 function generateToken(id, email) {
 	const token = { _id: id, email: email }
-	if (email === "admin01@admin.com.ar") {
+	if (email === process.env.ADMIN_EMAIL) {
 		token.role = "admin"
 	}
 	

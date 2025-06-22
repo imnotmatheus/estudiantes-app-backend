@@ -24,8 +24,11 @@ export const saveNewEventController = async (req, res) => {
 };
 
 export const getUserEventsController = async (req, res) => {
+	const month = req.query.m ? parseInt(req.query.m) : undefined
+	const year = req.query.y ? parseInt(req.query.y) : undefined
+
 	try {
-		const events = await getUserEvents(req.user._id);
+		const events = await getUserEvents(req.user._id, month, year);
 		res.status(200).json(events);
 	} catch (error) {
 		const status = error.status || 500;

@@ -5,7 +5,6 @@ import { userExistsByID } from "./userService.js";
 
 
 export const getUserEvents = async (userId, month, year) => {
-    console.log(month, year)
   try {
     if (!userId || !ObjectId.isValid(userId)) {
       const error = new Error("User ID is invalid or required");
@@ -16,7 +15,6 @@ export const getUserEvents = async (userId, month, year) => {
     const objectId = new ObjectId(userId);
     const events = await findUserEvents(objectId)
     if (validateMonthAndYear(month, year)) {
-        console.log(events)
         return events.filter(e =>
             new Date(e.endDate).getMonth() == month - 1 && new Date(e.endDate).getFullYear() == year
         )

@@ -59,9 +59,10 @@ export const searchEventById = async (id) => {
     }
 };
 
-export const removeEventById = async (id) => {
+export const removeEventById = async (id, userId) => {
     try {
         validateEventId(id);
+        await validateUser(id, new ObjectId(userId));
 
         const deleted = await deleteEventById(id);
         if (!deleted) {
@@ -78,6 +79,15 @@ export const removeEventById = async (id) => {
         throw error;
     }
 };
+
+async function validateUser(id, userId) {
+    const userEvents = await findUserEvents(userId)
+    if (!userEvents.find(e => e._id == id)) {
+        const error = new Error("This event does not exist or you don't have permission to delete it")
+        error.statusCode = 401
+        throw error;
+    }
+}
 
 export async function saveNewEventService (title, description, endDate, type, userId) {
     if(!ObjectId.isValid(userId)){

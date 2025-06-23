@@ -66,7 +66,7 @@ export async function getUserByIdController(req, res) {
 
 export async function getAllUsersController(req, res) {
 	if (req.user.role !== "admin") {
-		res
+		return res
 			.status(401)
 			.json({ error_message: "Only admin users can request complete user list" });
 	}

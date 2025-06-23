@@ -4,7 +4,8 @@ import { createEvent, validateEvent } from "../models/eventSchema.js";
 import { userExistsByID } from "./userService.js";
 
 
-export const getUserEvents = async (userId) => {
+export const getUserEvents = async (userId, month, year) => {
+    console.log(month, year)
   try {
     if (!userId || !ObjectId.isValid(userId)) {
       const error = new Error("User ID is invalid or required");
@@ -13,7 +14,14 @@ export const getUserEvents = async (userId) => {
     }
 
     const objectId = new ObjectId(userId);
-    return await findUserEvents(objectId);
+    const events = await findUserEvents(objectId)
+    if (validateMonthAndYear(month, year)) {
+        console.log(events)
+        return events.filter(e =>
+            new Date(e.endDate).getMonth() == month - 1 && new Date(e.endDate).getFullYear() == year
+        )
+    }
+    return events
   } catch (error) {
     if (error.status) {
       throw error;
@@ -24,6 +32,10 @@ export const getUserEvents = async (userId) => {
     };
   }
 };
+
+function validateMonthAndYear(month, year) {
+    return month > 0 && month <= 12 && year > 2000 && year < 2050
+}
 
 function validateEventId(id) {
     if (!id) {

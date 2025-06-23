@@ -9,9 +9,7 @@ import {
 
 const userRouter = express.Router();
 
-// Route to register a new user
 userRouter.post("/register", registerUserController);
-// Route to login user
 userRouter.post("/login", loginUserController);
 userRouter.get("/:id", authMiddleware, getUserByIdController);
 userRouter.get("/", authMiddleware, getAllUsersController);

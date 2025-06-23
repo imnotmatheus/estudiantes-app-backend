@@ -6,7 +6,7 @@ import {
 } from "../services/eventService.js";
 
 export const saveNewEventController = async (req, res) => {
-	const { title, description, endDate, type, userId } = req.body;
+	const { title, description, endDate, type } = req.body;
 
 	try {
 		const eventoCreado = await saveNewEventService(
@@ -14,7 +14,7 @@ export const saveNewEventController = async (req, res) => {
 			description,
 			endDate,
 			type,
-			userId
+			req.user._id
 		);
 		res.status(201).json(eventoCreado);
 	} catch (error) {
@@ -24,8 +24,11 @@ export const saveNewEventController = async (req, res) => {
 };
 
 export const getUserEventsController = async (req, res) => {
+	const month = req.query.m ? parseInt(req.query.m) : undefined
+	const year = req.query.y ? parseInt(req.query.y) : undefined
+
 	try {
-		const events = await getUserEvents(req.user._id);
+		const events = await getUserEvents(req.user._id, month, year);
 		res.status(200).json(events);
 	} catch (error) {
 		const status = error.status || 500;
@@ -47,7 +50,7 @@ export const getEvent = async (req, res) => {
 
 export const deleteEvent = async (req, res) => {
 	try {
-		const result = await removeEventById(req.params.id);
+		const result = await removeEventById(req.params.id, req.user._id);
 		res.json(result);
 	} catch (error) {
 		const statusCode = error.statusCode || 500;

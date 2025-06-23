@@ -4,7 +4,7 @@ import { createEvent, validateEvent } from "../models/eventSchema.js";
 import { userExistsByID } from "./userService.js";
 
 
-export const getUserEvents = async (userId) => {
+export const getUserEvents = async (userId, month, year) => {
   try {
     if (!userId || !ObjectId.isValid(userId)) {
       const error = new Error("User ID is invalid or required");
@@ -13,7 +13,13 @@ export const getUserEvents = async (userId) => {
     }
 
     const objectId = new ObjectId(userId);
-    return await findUserEvents(objectId);
+    const events = await findUserEvents(objectId)
+    if (validateMonthAndYear(month, year)) {
+        return events.filter(e =>
+            new Date(e.endDate).getMonth() == month - 1 && new Date(e.endDate).getFullYear() == year
+        )
+    }
+    return events
   } catch (error) {
     if (error.status) {
       throw error;
@@ -24,6 +30,10 @@ export const getUserEvents = async (userId) => {
     };
   }
 };
+
+function validateMonthAndYear(month, year) {
+    return month > 0 && month <= 12 && year > 2000 && year < 2050
+}
 
 function validateEventId(id) {
     if (!id) {
@@ -59,9 +69,10 @@ export const searchEventById = async (id) => {
     }
 };
 
-export const removeEventById = async (id) => {
+export const removeEventById = async (id, userId) => {
     try {
         validateEventId(id);
+        await validateUser(id, new ObjectId(userId));
 
         const deleted = await deleteEventById(id);
         if (!deleted) {
@@ -78,6 +89,15 @@ export const removeEventById = async (id) => {
         throw error;
     }
 };
+
+async function validateUser(id, userId) {
+    const userEvents = await findUserEvents(userId)
+    if (!userEvents.find(e => e._id == id)) {
+        const error = new Error("This event does not exist or you don't have permission to delete it")
+        error.statusCode = 401
+        throw error;
+    }
+}
 
 export async function saveNewEventService (title, description, endDate, type, userId) {
     if(!ObjectId.isValid(userId)){

@@ -6,7 +6,7 @@ import {
 } from "../services/eventService.js";
 
 export const saveNewEventController = async (req, res) => {
-	const { title, description, endDate, type, userId } = req.body;
+	const { title, description, endDate, type } = req.body;
 
 	try {
 		const eventoCreado = await saveNewEventService(
@@ -14,7 +14,7 @@ export const saveNewEventController = async (req, res) => {
 			description,
 			endDate,
 			type,
-			userId
+			req.user._id
 		);
 		res.status(201).json(eventoCreado);
 	} catch (error) {
@@ -47,9 +47,10 @@ export const getEvent = async (req, res) => {
 
 export const deleteEvent = async (req, res) => {
 	try {
-		const result = await removeEventById(req.params.id);
+		const result = await removeEventById(req.params.id, req.user._id);
 		res.json(result);
 	} catch (error) {
+		console.log(error)
 		const statusCode = error.statusCode || 500;
 		const message =
 			statusCode === 500 ? "Internal server error" : error.message;
